@@ -1,7 +1,12 @@
 // ─────────────────────────────────────────────
 // BOOT — attach events once, then render
 // ─────────────────────────────────────────────
+let eventsAttached = false;
+
 document.addEventListener("DOMContentLoaded", () => {
+  // Guard: prevent double-attaching listeners
+  if (eventsAttached) return;
+  eventsAttached = true;
 
   document.querySelectorAll("[data-role]").forEach(el => {
     el.addEventListener("click", e => {
@@ -31,12 +36,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("confirmDeleteBtn").addEventListener("click", handleDeleteTransaction);
 
-  // Remove direct reset action from button click; handled through modal confirm
-
   document.getElementById("confirmResetBtn").addEventListener("click", () => {
     dispatch({ type: "RESET_DASHBOARD" });
     showFeedbackToast("Dashboard reset to initial state");
     bootstrap.Modal.getInstance(document.getElementById("resetDashboardModal")).hide();
+  });
+
+  // Single delegated listener at table body level
+  document.getElementById("transactionsTableBody").addEventListener("click", (e) => {
+    const btn = e.target.closest("button.edit-tx, button.delete-tx");
+    if (!btn) return;
+
+    e.stopPropagation();
+    const txId = btn.dataset.id;
+    
+    if (btn.classList.contains("edit-tx")) {
+      openEditModal(txId);
+    } else if (btn.classList.contains("delete-tx")) {
+      openDeleteModal(txId);
+    }
   });
 
   document.getElementById("confirmClearAllBtn").addEventListener("click", () => {

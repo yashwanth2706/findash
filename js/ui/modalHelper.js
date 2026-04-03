@@ -89,7 +89,16 @@ function showFeedbackToast(message, variant = "success") {
   `;
   container.insertAdjacentHTML("beforeend", toastHtml);
   const toastEl = document.getElementById(toastId);
+  
+  // Clean up listener and DOM after toast hides
+  const removeToast = () => {
+    toastEl.removeEventListener("hidden.bs.toast", removeToast);
+    setTimeout(() => {
+      toastEl.remove();
+    }, 0);
+  };
+  
+  toastEl.addEventListener("hidden.bs.toast", removeToast);
   const toast = new bootstrap.Toast(toastEl, { delay: 1500 });
-  toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
   toast.show();
 }

@@ -120,18 +120,7 @@ function renderTransactionsTable(state) {
 
   patchTbody(tbody, newRows);
 
-  // Re-attach event listeners only on rows that are admin-controlled
-  if (state.role === "admin") {
-    tbody.querySelectorAll(".edit-tx").forEach(btn => {
-      btn.addEventListener("click", e => { e.stopPropagation(); openEditModal(btn.dataset.id); });
-    });
-    tbody.querySelectorAll(".delete-tx").forEach(btn => {
-      btn.addEventListener("click", e => {
-        e.stopPropagation();
-        openDeleteModal(btn.dataset.id);
-      });
-    });
-  }
+  // Event delegation handles edit/delete in onBootEventListener; no per-render attachment here.
 }
 
 function renderInsights(transactions) {
