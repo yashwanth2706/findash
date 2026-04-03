@@ -1,0 +1,29 @@
+    * { transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; }
+    body {
+      background: #fbfbf3;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    body.dark-mode { background: #0b1120; color: #e2e8f0; }
+    body.dark-mode .card, body.dark-mode .bg-white { background-color: #1e293b !important; border-color: #334155 !important; color: #e2e8f0; }
+    body.dark-mode .table { color: #e2e8f0; }
+    body.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>* { background-color: rgba(255,255,255,0.05); }
+    body.dark-mode .btn-outline-secondary { border-color: #475569; color: #cbd5e1; }
+    body.dark-mode .dropdown-menu { background-color: #1e293b; border-color: #334155; }
+    body.dark-mode .dropdown-item { color: #e2e8f0; }
+    body.dark-mode .dropdown-item:hover { background-color: #334155; }
+    body.dark-mode .form-control, body.dark-mode .input-group-text { background-color: #0f172a; border-color: #334155; color: #f1f5f9; }
+    .card { border: none; border-radius: 1.5rem; box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05); transition: transform 0.1s ease; }
+    .summary-card { border-left: 5px solid; transition: all 0.2s; }
+    .summary-card.total { border-left-color: #3b82f6; }
+    .summary-card.income { border-left-color: #10b981; }
+    .summary-card.expense { border-left-color: #ef4444; }
+    .role-badge { background: #eef2ff; padding: 6px 14px; border-radius: 40px; font-size: 0.85rem; font-weight: 500; }
+    body.dark-mode .role-badge { background: #2d3a5e; color: #b9d0ff; }
+    .transaction-row:hover { background-color: rgba(59,130,246,0.05); cursor: pointer; }
+    .filter-active { font-weight: 600; background-color: #eef2ff; }
+    .insight-bubble { background: #f8fafc; border-radius: 1rem; padding: 0.75rem 1rem; }
+    body.dark-mode .insight-bubble { background: #111827; }
+    .btn-icon { border-radius: 40px; padding: 0.3rem 0.9rem; }
+    @media (max-width: 768px) { .card-title { font-size: 1rem; } .display-6 { font-size: 1.6rem; } }
+    canvas { max-height: 220px; width: 100% !important; }
+    .pointer { cursor: pointer; }

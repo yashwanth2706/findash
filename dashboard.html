@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FinDash | Interactive Finance Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+<div class="container py-4 py-md-5">
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h1 class="fw-bold mb-0" style="letter-spacing: -0.02em;"><i class="bi bi-graph-up"></i> FinDash</h1>
+      <p class="text-secondary-emphasis mt-1">Smart finance overview &amp; insights</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" id="roleDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-badge"></i> Role: <span id="currentRoleLabel">Viewer</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="roleDropdown">
+          <li><a class="dropdown-item" data-role="viewer" href="#"><i class="bi bi-eye"></i> Viewer (add)</a></li>
+          <li><a class="dropdown-item" data-role="admin" href="#"><i class="bi bi-shield-lock"></i> Admin (add/edit/delete)</a></li>
+        </ul>
+      </div>
+      <button id="darkModeToggle" class="btn btn-outline-secondary rounded-circle" style="width: 42px;"><i class="bi bi-moon-stars"></i></button>
+    </div>
+  </div>
+
+  <hr/>
+
+  <!-- SUMMARY CARDS -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card summary-card total p-3 h-100">
+        <div class="card-body">
+          <p class="text-secondary mb-1"><i class="bi bi-wallet2"></i> Total Balance</p>
+          <h2 class="display-6 fw-bold" id="totalBalance">$0</h2>
+          <small class="text-success"><i class="bi bi-arrow-up-short"></i> vs last month</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card summary-card income p-3 h-100">
+        <div class="card-body">
+          <p class="text-secondary mb-1"><i class="bi bi-arrow-down-circle"></i> Total Income</p>
+          <h2 class="display-6 fw-bold" id="totalIncome">$0</h2>
+          <small class="text-muted">This month</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card summary-card expense p-3 h-100">
+        <div class="card-body">
+          <p class="text-secondary mb-1"><i class="bi bi-arrow-up-circle"></i> Total Expenses</p>
+          <h2 class="display-6 fw-bold" id="totalExpense">$0</h2>
+          <small class="text-muted">This month</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-6">
+      <div class="card p-3 h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold"><i class="bi bi-calendar-week"></i> Balance Trend (Last 6 months)</h5>
+          <canvas id="trendChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card p-3 h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold"><i class="bi bi-pie-chart"></i> Spending by Category</h5>
+          <canvas id="categoryChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <h4 class="fw-semibold m-0"><i class="bi bi-receipt"></i> Transactions</h4>
+        <div class="d-flex gap-2 flex-wrap">
+          <div class="input-group" style="max-width: 240px;">
+            <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search description / category" autocomplete="off">
+          </div>
+          <select id="typeFilter" class="form-select w-auto">
+            <option value="all">All types</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+          <select id="sortSelect" class="form-select w-auto">
+            <option value="date_desc">Newest first</option>
+            <option value="date_asc">Oldest first</option>
+            <option value="amount_desc">Amount: high to low</option>
+            <option value="amount_asc">Amount: low to high</option>
+          </select>
+          <button id="addTransactionBtn" class="btn btn-primary rounded-pill" disabled><i class="bi bi-plus-lg"></i> Add</button>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th>Type</th>
+              <th id="adminActionsHeader" style="display: none;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsTableBody">
+            <tr><td colspan="6" class="text-center text-muted py-4">Loading transactions...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="emptyStateMsg" class="text-center text-muted py-2 d-none">No transactions match your filters. 🧾</div>
+    </div>
+  </div>
+
+  <!-- Insights -->
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="fw-semibold"><i class="bi bi-lightbulb"></i> Smart Insights</h5>
+          <div class="row g-3" id="insightsContainer">
+            <div class="col-md-4"><div class="insight-bubble">📊 Loading insights...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="transactionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Add Transaction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId" value="">
+        <div class="mb-3"><label>Date</label><input type="date" id="txDate" class="form-control" required></div>
+        <div class="mb-3"><label>Description</label><input type="text" id="txDesc" class="form-control" placeholder="e.g., Salary, Groceries" required></div>
+        <div class="mb-3"><label>Category</label><input type="text" id="txCategory" class="form-control" placeholder="Food, Rent, Freelance" required></div>
+        <div class="mb-3"><label>Amount ($)</label><input type="number" id="txAmount" class="form-control" step="0.01" required></div>
+        <div class="mb-3">
+          <label>Type</label>
+          <select id="txType" class="form-select">
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="saveTransactionBtn" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="./js/defaultTransactionData.js"></script>
+<script src="./js/appState.js"></script>
+<script src="./js/chartInstances.js"></script>
+<script src="./js/reducer.js"></script>
+<script src="./js/dispatcher.js"></script>
+<script src="./js/domdiffer.js"></script>
+<script src="./js/render.js"></script>
+<script src="./js/viewHelpers.js"></script>
+<script src="./js/onBootEventListener.js"></script>
+<script src="./js/modalHelper.js"></script>
+</body>
+</html>
