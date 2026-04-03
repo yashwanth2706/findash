@@ -75,10 +75,21 @@ function handleDeleteTransaction() {
   showFeedbackToast(`Transaction: ${category} Deleted`);
 }
 
-function showFeedbackToast(message) {
-  const toastEl = document.getElementById("feedbackToast");
-  const toastMessage = document.getElementById("toastMessage");
-  toastMessage.textContent = message;
-  const toast = new bootstrap.Toast(toastEl);
+function showFeedbackToast(message, variant = "success") {
+  const container = document.querySelector(".toast-container");
+  const toastId = `feedbackToast-${Date.now()}`;
+  const bgClass = variant === "warning" ? "bg-warning text-dark" : "bg-success text-white";
+  const toastHtml = `
+    <div id="${toastId}" class="toast align-items-center ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1000" data-bs-autohide="true">
+      <div class="d-flex">
+        <div class="toast-body">${message}</div>
+        <button type="button" class="btn-close ${variant === "warning" ? "" : "btn-close-white"} me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+      </div>
+    </div>
+  `;
+  container.insertAdjacentHTML("beforeend", toastHtml);
+  const toastEl = document.getElementById(toastId);
+  const toast = new bootstrap.Toast(toastEl, { delay: 1000 });
+  toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
   toast.show();
 }

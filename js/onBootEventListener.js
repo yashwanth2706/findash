@@ -31,6 +31,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("confirmDeleteBtn").addEventListener("click", handleDeleteTransaction);
 
+  document.getElementById("confirmClearAllBtn").addEventListener("click", () => {
+    if (!state.transactions.length) {
+      showFeedbackToast("Nothing to delete", "warning");
+      bootstrap.Modal.getInstance(document.getElementById("clearAllModal")).hide();
+      return;
+    }
+
+    dispatch({ type: "CLEAR_TRANSACTIONS" });
+    showFeedbackToast("Done, all transactions in your dashboard has been zapped!");
+    bootstrap.Modal.getInstance(document.getElementById("clearAllModal")).hide();
+  });
+
   // Settings offcanvas
   const settingsOffcanvas = document.getElementById("settingsOffcanvas");
   settingsOffcanvas.addEventListener("show.bs.offcanvas", () => {

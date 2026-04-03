@@ -40,6 +40,11 @@ function reducer(state, action) {
       return { ...state, transactions };
     }
 
+    case "CLEAR_TRANSACTIONS": {
+      localStorage.setItem("fintransactions", JSON.stringify([]));
+      return { ...state, transactions: [] };
+    }
+
     default:
       return state;
   }
