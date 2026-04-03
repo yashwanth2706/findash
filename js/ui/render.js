@@ -9,6 +9,10 @@ function render(state) {
   // --- role label ---
   patchText("currentRoleLabel", state.role === "admin" ? "Admin" : "Viewer");
 
+  // --- settings button ---
+  const settingsBtn = document.getElementById("settingsToggle");
+  patchStyle(settingsBtn, "display", state.role === "admin" ? "inline-block" : "none");
+
   // --- add button ---
   const addBtn = document.getElementById("addTransactionBtn");
   addBtn.disabled = false; // both roles can open the modal per original logic

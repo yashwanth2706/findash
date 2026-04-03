@@ -31,6 +31,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("confirmDeleteBtn").addEventListener("click", handleDeleteTransaction);
 
+  // Settings offcanvas
+  const settingsOffcanvas = document.getElementById("settingsOffcanvas");
+  settingsOffcanvas.addEventListener("show.bs.offcanvas", () => {
+    const skipConfirm = localStorage.getItem("skipDeleteConfirm") === "true";
+    document.getElementById("deleteConfirmToggle").checked = !skipConfirm;
+  });
+
+  document.getElementById("deleteConfirmToggle").addEventListener("change", (e) => {
+    if (e.target.checked) {
+      localStorage.removeItem("skipDeleteConfirm");
+    } else {
+      localStorage.setItem("skipDeleteConfirm", "true");
+    }
+  });
+
   document.getElementById("darkModeToggle").addEventListener("click", () =>
     dispatch({ type: "TOGGLE_DARK_MODE" })
   );

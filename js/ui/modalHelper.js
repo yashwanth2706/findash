@@ -38,8 +38,13 @@ function handleSaveTransaction() {
   }
 
   const txData = { date, description, category, amount, type };
-  if (id) dispatch({ type: "UPDATE_TRANSACTION", payload: { id, data: txData } });
-  else     dispatch({ type: "ADD_TRANSACTION",    payload: txData });
+  if (id) {
+    dispatch({ type: "UPDATE_TRANSACTION", payload: { id, data: txData } });
+    showFeedbackToast(`Transaction: ${category} Updated`);
+  } else {
+    dispatch({ type: "ADD_TRANSACTION",    payload: txData });
+    showFeedbackToast(`Transaction: ${category} Added`);
+  }
 
   bootstrap.Modal.getInstance(document.getElementById("transactionModal")).hide();
 }
@@ -59,10 +64,21 @@ function openDeleteModal(id) {
 function handleDeleteTransaction() {
   const modal = bootstrap.Modal.getInstance(document.getElementById("deleteModal"));
   const id = document.getElementById("deleteModal").dataset.txId;
+  const transaction = state.transactions.find(t => t.id === id);
+  const category = transaction ? transaction.category : "Unknown";
   const dontAskAgain = document.getElementById("dontAskAgain").checked;
   if (dontAskAgain) {
     localStorage.setItem("skipDeleteConfirm", "true");
   }
   dispatch({ type: "DELETE_TRANSACTION", payload: id });
   modal.hide();
+  showFeedbackToast(`Transaction: ${category} Deleted`);
+}
+
+function showFeedbackToast(message) {
+  const toastEl = document.getElementById("feedbackToast");
+  const toastMessage = document.getElementById("toastMessage");
+  toastMessage.textContent = message;
+  const toast = new bootstrap.Toast(toastEl);
+  toast.show();
 }
