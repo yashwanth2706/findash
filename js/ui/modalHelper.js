@@ -43,3 +43,26 @@ function handleSaveTransaction() {
 
   bootstrap.Modal.getInstance(document.getElementById("transactionModal")).hide();
 }
+
+function openDeleteModal(id) {
+  const skipConfirm = localStorage.getItem("skipDeleteConfirm") === "true";
+  if (skipConfirm) {
+    dispatch({ type: "DELETE_TRANSACTION", payload: id });
+    return;
+  }
+  const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("deleteModal"));
+  document.getElementById("deleteModal").dataset.txId = id;
+  document.getElementById("dontAskAgain").checked = false;
+  modal.show();
+}
+
+function handleDeleteTransaction() {
+  const modal = bootstrap.Modal.getInstance(document.getElementById("deleteModal"));
+  const id = document.getElementById("deleteModal").dataset.txId;
+  const dontAskAgain = document.getElementById("dontAskAgain").checked;
+  if (dontAskAgain) {
+    localStorage.setItem("skipDeleteConfirm", "true");
+  }
+  dispatch({ type: "DELETE_TRANSACTION", payload: id });
+  modal.hide();
+}

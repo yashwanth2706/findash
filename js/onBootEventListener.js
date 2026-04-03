@@ -29,6 +29,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("saveTransactionBtn").addEventListener("click", handleSaveTransaction);
 
+  document.getElementById("confirmDeleteBtn").addEventListener("click", handleDeleteTransaction);
+
   document.getElementById("darkModeToggle").addEventListener("click", () =>
     dispatch({ type: "TOGGLE_DARK_MODE" })
   );

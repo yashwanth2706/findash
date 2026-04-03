@@ -54,29 +54,47 @@ function computeTrend(transactions) {
 
 function computeInsights(transactions) {
   const expenses = transactions.filter(t => t.type === "expense");
-  if (!expenses.length) return null;
+  const incomes = transactions.filter(t => t.type === "income");
 
-  const catSpending = {};
-  expenses.forEach(e => { catSpending[e.category] = (catSpending[e.category] || 0) + e.amount; });
-  const topCategory = Object.keys(catSpending).reduce((a, b) => catSpending[a] > catSpending[b] ? a : b);
-  const topAmount   = catSpending[topCategory];
-  const totalExp    = expenses.reduce((s, e) => s + e.amount, 0);
+  if (!expenses.length && !incomes.length) return null;
 
-  const now = new Date();
-  const cm  = now.getMonth(), cy = now.getFullYear();
-  let thisMonthExp = 0, lastMonthExp = 0;
-  transactions.forEach(tx => {
-    if (tx.type !== "expense") return;
-    const d = new Date(tx.date);
-    if (d.getMonth() === cm && d.getFullYear() === cy) thisMonthExp += tx.amount;
-    else if (
-      (cm > 0 && d.getMonth() === cm - 1 && d.getFullYear() === cy) ||
-      (cm === 0 && d.getMonth() === 11 && d.getFullYear() === cy - 1)
-    ) lastMonthExp += tx.amount;
-  });
-  const change = lastMonthExp
-    ? ((thisMonthExp - lastMonthExp) / lastMonthExp * 100).toFixed(1)
-    : (thisMonthExp ? 100 : 0);
+  let result = {};
 
-  return { topCategory, topAmount, totalExp, thisMonthExp, lastMonthExp, change };
+  if (expenses.length) {
+    const catSpending = {};
+    expenses.forEach(e => { catSpending[e.category] = (catSpending[e.category] || 0) + e.amount; });
+    const topCategory = Object.keys(catSpending).reduce((a, b) => catSpending[a] > catSpending[b] ? a : b);
+    const topAmount   = catSpending[topCategory];
+    const totalExp    = expenses.reduce((s, e) => s + e.amount, 0);
+
+    const now = new Date();
+    const cm  = now.getMonth(), cy = now.getFullYear();
+    let thisMonthExp = 0, lastMonthExp = 0;
+    transactions.forEach(tx => {
+      if (tx.type !== "expense") return;
+      const d = new Date(tx.date);
+      if (d.getMonth() === cm && d.getFullYear() === cy) thisMonthExp += tx.amount;
+      else if (
+        (cm > 0 && d.getMonth() === cm - 1 && d.getFullYear() === cy) ||
+        (cm === 0 && d.getMonth() === 11 && d.getFullYear() === cy - 1)
+      ) lastMonthExp += tx.amount;
+    });
+    const change = lastMonthExp
+      ? ((thisMonthExp - lastMonthExp) / lastMonthExp * 100).toFixed(1)
+      : (thisMonthExp ? 100 : 0);
+
+    result = { ...result, topCategory, topAmount, totalExp, thisMonthExp, lastMonthExp, change };
+  }
+
+  if (incomes.length) {
+    const incCat = {};
+    incomes.forEach(i => { incCat[i.category] = (incCat[i.category] || 0) + i.amount; });
+    const topIncCategory = Object.keys(incCat).reduce((a, b) => incCat[a] > incCat[b] ? a : b);
+    const topIncAmount = incCat[topIncCategory];
+    const totalInc = incomes.reduce((s, i) => s + i.amount, 0);
+
+    result = { ...result, topIncCategory, topIncAmount, totalInc };
+  }
+
+  return result;
 }

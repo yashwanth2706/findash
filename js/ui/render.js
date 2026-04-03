@@ -119,7 +119,7 @@ function renderTransactionsTable(state) {
     tbody.querySelectorAll(".delete-tx").forEach(btn => {
       btn.addEventListener("click", e => {
         e.stopPropagation();
-        if (confirm("Delete transaction?")) dispatch({ type: "DELETE_TRANSACTION", payload: btn.dataset.id });
+        openDeleteModal(btn.dataset.id);
       });
     });
   }
@@ -129,15 +129,28 @@ function renderInsights(transactions) {
   const data = computeInsights(transactions);
   const container = document.getElementById("insightsContainer");
   if (!data) {
-    const html = `<div class="col-12"><div class="insight-bubble">✨ No expense data to show insights. Add transactions.</div></div>`;
+    const html = `<div class="col-12"><div class="insight-bubble">✨ No data to show insights. Add transactions.</div></div>`;
     if (container.innerHTML !== html) container.innerHTML = html;
     return;
   }
-  const { topCategory, topAmount, totalExp, thisMonthExp, change } = data;
-  const html = `
-    <div class="col-md-4"><div class="insight-bubble"><strong>Highest spend category</strong><br>${topCategory} : $${topAmount.toFixed(2)}</div></div>
-    <div class="col-md-4"><div class="insight-bubble"><strong>Monthly expense change</strong><br>This month: $${thisMonthExp.toFixed(2)} vs last month: ${change}% ${change >= 0 ? "🔺" : "🔻"}</div></div>
-    <div class="col-md-4"><div class="insight-bubble"><strong>Insight</strong><br>${topCategory} represents ${((topAmount / totalExp) * 100).toFixed(0)}% of total expenses.</div></div>
-  `;
+
+  let html = '';
+
+  if (data.topCategory) {
+    html += `<div class="col-md-3"><div class="insight-bubble"><strong>Highest spend category</strong><br>${data.topCategory} : $${data.topAmount.toFixed(2)}</div></div>`;
+  }
+
+  if (data.topIncCategory) {
+    html += `<div class="col-md-3"><div class="insight-bubble"><strong>Top income source</strong><br>${data.topIncCategory} : $${data.topIncAmount.toFixed(2)}</div></div>`;
+  }
+
+  if (data.thisMonthExp !== undefined) {
+    html += `<div class="col-md-3"><div class="insight-bubble"><strong>Monthly expense change</strong><br>This month: $${data.thisMonthExp.toFixed(2)} vs last month: ${data.change}% ${data.change >= 0 ? "🔺" : "🔻"}</div></div>`;
+  }
+
+  if (data.topCategory && data.totalExp) {
+    html += `<div class="col-md-3"><div class="insight-bubble"><strong>Expense insight</strong><br>${data.topCategory} represents ${((data.topAmount / data.totalExp) * 100).toFixed(0)}% of total expenses.</div></div>`;
+  }
+
   if (container.innerHTML !== html) container.innerHTML = html;
 }
