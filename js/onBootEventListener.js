@@ -31,6 +31,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("confirmDeleteBtn").addEventListener("click", handleDeleteTransaction);
 
+  // Remove direct reset action from button click; handled through modal confirm
+
+  document.getElementById("confirmResetBtn").addEventListener("click", () => {
+    dispatch({ type: "RESET_DASHBOARD" });
+    showFeedbackToast("Dashboard reset to initial state");
+    bootstrap.Modal.getInstance(document.getElementById("resetDashboardModal")).hide();
+  });
+
   document.getElementById("confirmClearAllBtn").addEventListener("click", () => {
     if (!state.transactions.length) {
       showFeedbackToast("Nothing to delete", "warning");

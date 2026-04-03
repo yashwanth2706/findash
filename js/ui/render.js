@@ -13,11 +13,14 @@ function render(state) {
   const settingsBtn = document.getElementById("settingsToggle");
   patchStyle(settingsBtn, "display", state.role === "admin" ? "inline-block" : "none");
 
-  // --- add + clear all buttons ---
+  // --- add + clear all + reset buttons ---
   const addBtn = document.getElementById("addTransactionBtn");
   const clearAllBtn = document.getElementById("clearAllBtn");
-  addBtn.disabled = false; // both roles can open the modal per original logic
-  clearAllBtn.style.display = state.role === "admin" ? "inline-block" : "none";
+  const resetBtn = document.getElementById("resetDashboardBtn");
+  addBtn.disabled = false;
+  const isAdmin = state.role === "admin";
+  clearAllBtn.style.display = isAdmin ? "inline-block" : "none";
+  resetBtn.style.display = isAdmin ? "inline-block" : "none";
 
   // --- summary cards ---
   const { totalIncome, totalExpense, totalBalance } = computeSummary(state.transactions);

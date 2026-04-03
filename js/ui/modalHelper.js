@@ -80,7 +80,7 @@ function showFeedbackToast(message, variant = "success") {
   const toastId = `feedbackToast-${Date.now()}`;
   const bgClass = variant === "warning" ? "bg-warning text-dark" : "bg-success text-white";
   const toastHtml = `
-    <div id="${toastId}" class="toast align-items-center ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1000" data-bs-autohide="true">
+    <div id="${toastId}" class="toast align-items-center ${bgClass} border-0" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="1500" data-bs-autohide="true">
       <div class="d-flex">
         <div class="toast-body">${message}</div>
         <button type="button" class="btn-close ${variant === "warning" ? "" : "btn-close-white"} me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
@@ -89,7 +89,7 @@ function showFeedbackToast(message, variant = "success") {
   `;
   container.insertAdjacentHTML("beforeend", toastHtml);
   const toastEl = document.getElementById(toastId);
-  const toast = new bootstrap.Toast(toastEl, { delay: 1000 });
+  const toast = new bootstrap.Toast(toastEl, { delay: 1500 });
   toastEl.addEventListener("hidden.bs.toast", () => toastEl.remove());
   toast.show();
 }

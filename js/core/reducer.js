@@ -45,6 +45,22 @@ function reducer(state, action) {
       return { ...state, transactions: [] };
     }
 
+    case "RESET_DASHBOARD": {
+      localStorage.removeItem("fintransactions");
+      localStorage.removeItem("skipDeleteConfirm");
+      localStorage.removeItem("darkMode");
+      localStorage.setItem("fintransactions", JSON.stringify(defaultTransactions));
+      return {
+        ...state,
+        transactions: [...defaultTransactions],
+        role: "viewer",
+        filterType: "all",
+        searchTerm: "",
+        sortBy: "date_desc",
+        darkMode: false,
+      };
+    }
+
     default:
       return state;
   }
