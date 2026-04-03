@@ -171,15 +171,27 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="./js/defaultTransactionData.js"></script>
-<script src="./js/appState.js"></script>
-<script src="./js/chartInstances.js"></script>
-<script src="./js/reducer.js"></script>
-<script src="./js/dispatcher.js"></script>
-<script src="./js/domdiffer.js"></script>
-<script src="./js/render.js"></script>
-<script src="./js/viewHelpers.js"></script>
+<!-- Data: seed/default data, no dependencies -->
+<script src="./js/data/defaultTransactionData.js"></script>
+
+<!-- Helpers: pure utility functions, no dependencies -->
+<script src="./js/helpers/viewHelpers.js"></script>
+
+<!-- Core: state machine — order matters (appState needs reducer, dispatcher needs both) -->
+<script src="./js/core/appState.js"></script>
+<script src="./js/core/dispatcher.js"></script>
+<script src="./js/core/reducer.js"></script>
+
+<!-- Charts: Chart.js wrappers, depends on appState -->
+<script src="./js/charts/chartInstances.js"></script>
+
+<!-- UI: DOM layer — domdiffer first, then modalHelper, render last (it calls both) -->
+<script src="./js/ui/domdiffer.js"></script>
+<script src="./js/ui/modalHelper.js"></script>
+<script src="./js/ui/render.js"></script>
+
+<!-- Entry point: wires everything together, must load last -->
 <script src="./js/onBootEventListener.js"></script>
-<script src="./js/modalHelper.js"></script>
+
 </body>
 </html>
