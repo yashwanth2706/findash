@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>FinDash | Interactive Finance Dashboard</title>
+  <!-- Bootstrap 5 CSS + Icons + Chart.js CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    * {
+      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    }
+    body {
+      /*
+      background: #f4f5fb;
+      */
+      background: #fbfbf3;
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    /* custom dark mode class (optional but toggled via js) */
+    body.dark-mode {
+      background: #0b1120;
+      color: #e2e8f0;
+    }
+    body.dark-mode .card, body.dark-mode .bg-white {
+      background-color: #1e293b !important;
+      border-color: #334155 !important;
+      color: #e2e8f0;
+    }
+    body.dark-mode .table {
+      color: #e2e8f0;
+    }
+    body.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>* {
+      background-color: rgba(255,255,255,0.05);
+    }
+    body.dark-mode .btn-outline-secondary {
+      border-color: #475569;
+      color: #cbd5e1;
+    }
+    body.dark-mode .dropdown-menu {
+      background-color: #1e293b;
+      border-color: #334155;
+    }
+    body.dark-mode .dropdown-item {
+      color: #e2e8f0;
+    }
+    body.dark-mode .dropdown-item:hover {
+      background-color: #334155;
+    }
+    body.dark-mode .form-control, body.dark-mode .input-group-text {
+      background-color: #0f172a;
+      border-color: #334155;
+      color: #f1f5f9;
+    }
+
+    .card {
+      border: none;
+      border-radius: 1.5rem;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05);
+      transition: transform 0.1s ease;
+    }
+    .summary-card {
+      border-left: 5px solid;
+      transition: all 0.2s;
+    }
+    .summary-card.total {
+      border-left-color: #3b82f6;
+    }
+    .summary-card.income {
+      border-left-color: #10b981;
+    }
+    .summary-card.expense {
+      border-left-color: #ef4444;
+    }
+    .role-badge {
+      background: #eef2ff;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    body.dark-mode .role-badge {
+      background: #2d3a5e;
+      color: #b9d0ff;
+    }
+    .transaction-row:hover {
+      background-color: rgba(59,130,246,0.05);
+      cursor: pointer;
+    }
+    .filter-active {
+      font-weight: 600;
+      background-color: #eef2ff;
+    }
+    .insight-bubble {
+      background: #f8fafc;
+      border-radius: 1rem;
+      padding: 0.75rem 1rem;
+    }
+    body.dark-mode .insight-bubble {
+      background: #111827;
+    }
+    .btn-icon {
+      border-radius: 40px;
+      padding: 0.3rem 0.9rem;
+    }
+    @media (max-width: 768px) {
+      .card-title { font-size: 1rem; }
+      .display-6 { font-size: 1.6rem; }
+    }
+    canvas { max-height: 220px; width: 100% !important; }
+    .pointer { cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<div class="container py-4 py-md-5">
+  <!-- header + role switcher + dark mode toggle -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+    <div>
+      <h1 class="fw-bold mb-0" style="letter-spacing: -0.02em;"><i class="bi bi-graph-up"></i> FinDash</h1>
+      <p class="text-secondary-emphasis mt-1">Smart finance overview & insights</p>
+    </div>
+    <div class="d-flex gap-2 align-items-center">
+      <!-- role dropdown -->
+      <div class="dropdown">
+        <button class="btn btn-outline-secondary rounded-pill dropdown-toggle" type="button" id="roleDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+          <i class="bi bi-person-badge"></i> Role: <span id="currentRoleLabel">Viewer</span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="roleDropdown">
+          <li><a class="dropdown-item" data-role="viewer" href="#"><i class="bi bi-eye"></i> Viewer (add)</a></li>
+          <li><a class="dropdown-item" data-role="admin" href="#"><i class="bi bi-shield-lock"></i> Admin (add/edit/delete)</a></li>
+        </ul>
+      </div>
+      <button id="darkModeToggle" class="btn btn-outline-secondary rounded-circle" style="width: 42px;"><i class="bi bi-moon-stars"></i></button>
+    </div>
+  </div>
+
+  <hr/>
+
+  <!-- SUMMARY CARDS -->
+  <div class="row g-4 mb-5">
+    <div class="col-md-4">
+      <div class="card summary-card total p-3 h-100">
+        <div class="card-body">
+          <p class="text-secondary mb-1"><i class="bi bi-wallet2"></i> Total Balance</p>
+          <h2 class="display-6 fw-bold" id="totalBalance">$0</h2>
+          <small class="text-success"><i class="bi bi-arrow-up-short"></i> vs last month</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card summary-card income p-3 h-100">
+        <div class="card-body">
+          <p class="text-secondary mb-1"><i class="bi bi-arrow-down-circle"></i> Total Income</p>
+          <h2 class="display-6 fw-bold" id="totalIncome">$0</h2>
+          <small class="text-muted">This month</small>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card summary-card expense p-3 h-100">
+        <div class="card-body">
+          <p class="text-secondary mb-1"><i class="bi bi-arrow-up-circle"></i> Total Expenses</p>
+          <h2 class="display-6 fw-bold" id="totalExpense">$0</h2>
+          <small class="text-muted">This month</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts row: Time based + categorical -->
+  <div class="row g-4 mb-5">
+    <div class="col-lg-6">
+      <div class="card p-3 h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold"><i class="bi bi-calendar-week"></i> Balance Trend (Last 6 months)</h5>
+          <canvas id="trendChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card p-3 h-100">
+        <div class="card-body">
+          <h5 class="card-title fw-semibold"><i class="bi bi-pie-chart"></i> Spending by Category</h5>
+          <canvas id="categoryChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions Section + filters, search, sort, and admin actions -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-3">
+        <h4 class="fw-semibold m-0"><i class="bi bi-receipt"></i> Transactions</h4>
+        <div class="d-flex gap-2 flex-wrap">
+          <div class="input-group" style="max-width: 240px;">
+            <span class="input-group-text bg-transparent"><i class="bi bi-search"></i></span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Search description / category" autocomplete="off">
+          </div>
+          <select id="typeFilter" class="form-select w-auto">
+            <option value="all">All types</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+          <select id="sortSelect" class="form-select w-auto">
+            <option value="date_desc">Newest first</option>
+            <option value="date_asc">Oldest first</option>
+            <option value="amount_desc">Amount: high to low</option>
+            <option value="amount_asc">Amount: low to high</option>
+          </select>
+          <!-- admin-only: Add transaction button (dynamic) -->
+          <button id="addTransactionBtn" class="btn btn-primary rounded-pill" disabled><i class="bi bi-plus-lg"></i> Add</button>
+        </div>
+      </div>
+      
+      <!-- transaction table (responsive) -->
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Date</th><th>Description</th><th>Category</th><th>Amount</th><th>Type</th>
+              <th id="adminActionsHeader" style="display: none;">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="transactionsTableBody">
+            <tr><td colspan="6" class="text-center text-muted py-4">Loading transactions...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div id="emptyStateMsg" class="text-center text-muted py-2 d-none">No transactions match your filters. 🧾</div>
+    </div>
+  </div>
+
+  <!-- Insights Section -->
+  <div class="row g-4">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="fw-semibold"><i class="bi bi-lightbulb"></i> Smart Insights</h5>
+          <div class="row g-3" id="insightsContainer">
+            <div class="col-md-4"><div class="insight-bubble">📊 Loading insights...</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal for add/edit transaction (admin) -->
+<div class="modal fade" id="transactionModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalTitle">Add Transaction</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="editId" value="">
+        <div class="mb-3">
+          <label>Date</label><input type="date" id="txDate" class="form-control" required>
+        </div>
+        <div class="mb-3">
+          <label>Description</label><input type="text" id="txDesc" class="form-control" placeholder="e.g., Salary, Groceries" required>
+        </div>
+        <div class="mb-3">
+          <label>Category</label><input type="text" id="txCategory" class="form-control" placeholder="Food, Rent, Freelance" required>
+        </div>
+        <div class="mb-3">
+          <label>Amount ($)</label><input type="number" id="txAmount" class="form-control" step="0.01" required>
+        </div>
+        <div class="mb-3">
+          <label>Type</label>
+          <select id="txType" class="form-select">
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" id="saveTransactionBtn" class="btn btn-primary">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+  // ---------- MOCK DATA (with full CRUD & localstorage persistence) ----------
+  let transactions = [];
+
+  // Load default seed if localStorage empty
+  const defaultTransactions = [
+    { id: "1", date: "2024-12-05", description: "Freelance project", category: "Work", amount: 1200, type: "income" },
+    { id: "2", date: "2024-12-10", description: "Grocery shopping", category: "Food", amount: 156.30, type: "expense" },
+    { id: "3", date: "2024-12-15", description: "Netflix subscription", category: "Entertainment", amount: 15.99, type: "expense" },
+    { id: "4", date: "2024-12-20", description: "Salary December", category: "Salary", amount: 3200, type: "income" },
+    { id: "5", date: "2024-12-22", description: "Dinner out", category: "Food", amount: 89.50, type: "expense" },
+    { id: "6", date: "2024-11-28", description: "New headphones", category: "Electronics", amount: 129.99, type: "expense" },
+    { id: "7", date: "2024-11-15", description: "Part-time gig", category: "Work", amount: 450, type: "income" },
+    { id: "8", date: "2024-10-10", description: "Rent", category: "Housing", amount: 950, type: "expense" },
+    { id: "9", date: "2024-12-01", description: "Investment dividend", category: "Investment", amount: 80, type: "income" },
+    { id: "10", date: "2024-09-05", description: "Transport", category: "Travel", amount: 45, type: "expense" }
+  ];
+
+  function loadStoredData() {
+    const stored = localStorage.getItem("fintransactions");
+    if (stored) {
+      transactions = JSON.parse(stored);
+    } else {
+      transactions = [...defaultTransactions];
+      persistData();
+    }
+  }
+  function persistData() { localStorage.setItem("fintransactions", JSON.stringify(transactions)); }
+
+  // App state
+  let currentRole = "viewer";    // "viewer" or "admin"
+  let filterType = "all";
+  let searchTerm = "";
+  let sortBy = "date_desc";
+
+  // chart instances
+  let trendChart, categoryChart;
+
+  // Helper: update all UI
+  function updateDashboard() {
+    updateSummaryAndCharts();
+    renderTransactionsTable();
+    updateInsights();
+    updateUIBasedOnRole();
+  }
+
+  function updateSummaryAndCharts() {
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    let totalBalance = 0, totalIncome = 0, totalExpense = 0;
+    transactions.forEach(tx => {
+      if (tx.type === "income") totalIncome += tx.amount;
+      else totalExpense += tx.amount;
+    });
+    totalBalance = totalIncome - totalExpense;
+    document.getElementById("totalBalance").innerHTML = `$${totalBalance.toFixed(2)}`;
+    document.getElementById("totalIncome").innerHTML = `$${totalIncome.toFixed(2)}`;
+    document.getElementById("totalExpense").innerHTML = `$${totalExpense.toFixed(2)}`;
+
+    // Prepare trend data: last 6 months balances (cumulative)
+    const monthNames = [];
+    const monthlyBalances = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(currentYear, currentMonth - i, 1);
+      const monthKey = `${d.getFullYear()}-${d.getMonth()+1}`;
+      monthNames.push(d.toLocaleString('default', { month: 'short' }));
+      let balance = 0;
+      transactions.forEach(tx => {
+        const txDate = new Date(tx.date);
+        if (txDate.getFullYear() === d.getFullYear() && txDate.getMonth() === d.getMonth()) {
+          if (tx.type === "income") balance += tx.amount;
+          else balance -= tx.amount;
+        } else if (txDate < d) {
+          if (tx.type === "income") balance += tx.amount;
+          else balance -= tx.amount;
+        }
+      });
+      monthlyBalances.push(balance);
+    }
+    if (trendChart) trendChart.destroy();
+    const ctxTrend = document.getElementById('trendChart').getContext('2d');
+    trendChart = new Chart(ctxTrend, {
+      type: 'line', data: { labels: monthNames, datasets: [{ label: 'Balance ($)', data: monthlyBalances, borderColor: '#3b82f6', tension: 0.3, fill: false }] },
+      options: { responsive: true, maintainAspectRatio: true }
+    });
+
+    // Category spending (expense categories)
+    const categoryMap = new Map();
+    transactions.filter(t => t.type === "expense").forEach(tx => {
+      const cat = tx.category;
+      categoryMap.set(cat, (categoryMap.get(cat) || 0) + tx.amount);
+    });
+    const catLabels = [...categoryMap.keys()];
+    const catValues = [...categoryMap.values()];
+    if (categoryChart) categoryChart.destroy();
+    const ctxCat = document.getElementById('categoryChart').getContext('2d');
+    categoryChart = new Chart(ctxCat, {
+      type: 'doughnut', data: { labels: catLabels, datasets: [{ data: catValues, backgroundColor: ['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#ec489a'] }] },
+      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'bottom' } } }
+    });
+  }
+
+  function renderTransactionsTable() {
+    let filtered = [...transactions];
+    if (filterType !== "all") filtered = filtered.filter(t => t.type === filterType);
+    if (searchTerm.trim() !== "") {
+      const st = searchTerm.toLowerCase();
+      filtered = filtered.filter(t => t.description.toLowerCase().includes(st) || t.category.toLowerCase().includes(st));
+    }
+    if (sortBy === "date_desc") filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+    else if (sortBy === "date_asc") filtered.sort((a,b) => new Date(a.date) - new Date(b.date));
+    else if (sortBy === "amount_desc") filtered.sort((a,b) => b.amount - a.amount);
+    else if (sortBy === "amount_asc") filtered.sort((a,b) => a.amount - b.amount);
+
+    const tbody = document.getElementById("transactionsTableBody");
+    const emptyDiv = document.getElementById("emptyStateMsg");
+    if (filtered.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted py-3">No transactions match</td></tr>`;
+      emptyDiv.classList.remove("d-none");
+    } else {
+      emptyDiv.classList.add("d-none");
+      tbody.innerHTML = filtered.map(tx => `
+        <tr class="transaction-row" data-id="${tx.id}">
+          <td>${tx.date}</td><td>${escapeHtml(tx.description)}</td><td>${escapeHtml(tx.category)}</td>
+          <td class="${tx.type === 'income' ? 'text-success' : 'text-danger'} fw-semibold">${tx.type === 'income' ? '+' : '-'}$${Math.abs(tx.amount).toFixed(2)}</td>
+          <td><span class="badge ${tx.type === 'income' ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}">${tx.type}</span></td>
+          ${currentRole === 'admin' ? `<td><button class="btn btn-sm btn-outline-secondary edit-tx me-1" data-id="${tx.id}"><i class="bi bi-pencil"></i></button><button class="btn btn-sm btn-outline-danger delete-tx" data-id="${tx.id}"><i class="bi bi-trash"></i></button></td>` : ''}
+        </tr>
+      `).join('');
+      // attach admin events dynamically
+      if (currentRole === 'admin') {
+        document.querySelectorAll('.edit-tx').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); openEditModal(btn.dataset.id); }));
+        document.querySelectorAll('.delete-tx').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); if(confirm('Delete transaction?')) deleteTransaction(btn.dataset.id); }));
+      }
+    }
+  }
+
+  function updateInsights() {
+    const expenses = transactions.filter(t => t.type === "expense");
+    if (expenses.length === 0) {
+      document.getElementById("insightsContainer").innerHTML = `<div class="col-12"><div class="insight-bubble">✨ No expense data to show insights. Add transactions.</div></div>`;
+      return;
+    }
+    const catSpending = {};
+    expenses.forEach(e => { catSpending[e.category] = (catSpending[e.category] || 0) + e.amount; });
+    let topCategory = Object.keys(catSpending).reduce((a,b) => catSpending[a] > catSpending[b] ? a : b, "");
+    let topAmount = catSpending[topCategory] || 0;
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    let thisMonthExp = 0, lastMonthExp = 0;
+    transactions.forEach(tx => {
+      if (tx.type === "expense") {
+        const d = new Date(tx.date);
+        if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) thisMonthExp += tx.amount;
+        else if (d.getMonth() === currentMonth-1 && d.getFullYear() === currentYear) lastMonthExp += tx.amount;
+        else if (currentMonth === 0 && d.getMonth() === 11 && d.getFullYear() === currentYear-1) lastMonthExp += tx.amount;
+      }
+    });
+    const change = lastMonthExp ? ((thisMonthExp - lastMonthExp)/lastMonthExp*100).toFixed(1) : (thisMonthExp ? 100 : 0);
+    const insightHtml = `
+      <div class="col-md-4"><div class="insight-bubble"><strong>Highest spend category</strong><br>${topCategory} : $${topAmount.toFixed(2)}</div></div>
+      <div class="col-md-4"><div class="insight-bubble"><strong>Monthly expense change</strong><br>This month: $${thisMonthExp.toFixed(2)} vs last month: ${change}% ${change>=0 ? '🔺' : '🔻'}</div></div>
+      <div class="col-md-4"><div class="insight-bubble"><strong>Insight</strong><br>${topCategory} represents ${((topAmount/(expenses.reduce((s,e)=>s+e.amount,0)))*100).toFixed(0)}% of total expenses.</div></div>
+    `;
+    document.getElementById("insightsContainer").innerHTML = insightHtml;
+  }
+
+  function updateUIBasedOnRole() {
+    const adminAddBtn = document.getElementById("addTransactionBtn");
+    const adminHeader = document.getElementById("adminActionsHeader");
+    if (currentRole === "admin") {
+      adminAddBtn.disabled = false;
+      if(adminHeader) adminHeader.style.display = "table-cell";
+      document.querySelectorAll('.edit-tx, .delete-tx').forEach(el => el.style.display = "inline-block");
+    } else {
+      adminAddBtn.disabled = false;
+      if(adminHeader) adminHeader.style.display = "table-cell";
+      document.querySelectorAll('.edit-tx, .delete-tx').forEach(el => el.style.display = "inline-block");
+    }
+    document.getElementById("currentRoleLabel").innerText = currentRole === "admin" ? "Admin" : "Viewer";
+    renderTransactionsTable(); // re-render to show/hide action buttons
+  }
+
+  // Admin functions
+  function addTransaction(tx) {
+    const newId = Date.now().toString();
+    const newTx = { ...tx, id: newId };
+    transactions.push(newTx);
+    persistData();
+    updateDashboard();
+  }
+  function updateTransaction(id, updatedTx) {
+    const index = transactions.findIndex(t => t.id === id);
+    if (index !== -1) { transactions[index] = { ...transactions[index], ...updatedTx, id }; persistData(); updateDashboard(); }
+  }
+  function deleteTransaction(id) {
+    transactions = transactions.filter(t => t.id !== id);
+    persistData();
+    updateDashboard();
+  }
+  function openEditModal(id) {
+    const tx = transactions.find(t => t.id === id);
+    if (tx) {
+      document.getElementById("modalTitle").innerText = "Edit Transaction";
+      document.getElementById("editId").value = tx.id;
+      document.getElementById("txDate").value = tx.date;
+      document.getElementById("txDesc").value = tx.description;
+      document.getElementById("txCategory").value = tx.category;
+      document.getElementById("txAmount").value = tx.amount;
+      document.getElementById("txType").value = tx.type;
+      const modal = new bootstrap.Modal(document.getElementById("transactionModal"));
+      modal.show();
+    }
+  }
+  function resetModalForAdd() {
+    document.getElementById("modalTitle").innerText = "Add Transaction";
+    document.getElementById("editId").value = "";
+    document.getElementById("txDate").value = new Date().toISOString().slice(0,10);
+    document.getElementById("txDesc").value = "";
+    document.getElementById("txCategory").value = "";
+    document.getElementById("txAmount").value = "";
+    document.getElementById("txType").value = "expense";
+  }
+
+  function handleSaveTransaction() {
+    const id = document.getElementById("editId").value;
+    const date = document.getElementById("txDate").value;
+    const description = document.getElementById("txDesc").value.trim();
+    const category = document.getElementById("txCategory").value.trim();
+    const amount = parseFloat(document.getElementById("txAmount").value);
+    const type = document.getElementById("txType").value;
+    if (!date || !description || !category || isNaN(amount) || amount <= 0) { alert("Please fill all fields correctly."); return; }
+    const txData = { date, description, category, amount, type };
+    if (id) updateTransaction(id, txData);
+    else addTransaction(txData);
+    bootstrap.Modal.getInstance(document.getElementById("transactionModal")).hide();
+  }
+
+  function escapeHtml(str) { if(!str) return ""; return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+  // event listeners & init
+  document.addEventListener("DOMContentLoaded", () => {
+    loadStoredData();
+    // role switcher
+    document.querySelectorAll("[data-role]").forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.preventDefault();
+        currentRole = el.getAttribute("data-role");
+        updateUIBasedOnRole();
+      });
+    });
+    document.getElementById("typeFilter").addEventListener("change", (e) => { filterType = e.target.value; updateDashboard(); });
+    document.getElementById("searchInput").addEventListener("input", (e) => { searchTerm = e.target.value; updateDashboard(); });
+    document.getElementById("sortSelect").addEventListener("change", (e) => { sortBy = e.target.value; updateDashboard(); });
+    document.getElementById("addTransactionBtn").addEventListener("click", () => { resetModalForAdd(); const modal = new bootstrap.Modal(document.getElementById("transactionModal")); modal.show(); });
+    document.getElementById("saveTransactionBtn").addEventListener("click", handleSaveTransaction);
+    // dark mode toggle
+    const darkToggle = document.getElementById("darkModeToggle");
+    darkToggle.addEventListener("click", () => { document.body.classList.toggle("dark-mode"); localStorage.setItem("darkMode", document.body.classList.contains("dark-mode")); });
+    if(localStorage.getItem("darkMode") === "true") document.body.classList.add("dark-mode");
+    updateDashboard();
+  });
+</script>
+</body>
+</html>
