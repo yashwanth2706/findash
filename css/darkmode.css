@@ -1,0 +1,186 @@
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - BASE STYLES                                     */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode { 
+      background: #0b1120; 
+      color: #e2e8f0; 
+    }
+
+    /* Dark mode: Cards & general backgrounds */
+    body.dark-mode .card, body.dark-mode .bg-white { 
+      background-color: #1e293b !important; 
+      border-color: #334155 !important; 
+      color: #e2e8f0; 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - TABLES                                          */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode .table { 
+      color: #e2e8f0; 
+    }
+
+    body.dark-mode .table-light { 
+      background-color: #0f172a; 
+    }
+
+    /* Dark mode: Table headers */
+    body.dark-mode .table-light th { 
+      background-color: #1e293b; 
+      color: #e2e8f0; 
+      border-color: #334155; 
+    }
+
+    /* Dark mode: Alternate row colors for better readability */
+    body.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>* { 
+      background-color: rgba(255,255,255,0.05); 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - BUTTONS & CONTROLS                              */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode .btn-outline-secondary { 
+      border-color: #475569; 
+      color: #cbd5e1; 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - DROPDOWNS & MENUS                               */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode .dropdown-menu { 
+      background-color: #1e293b; 
+      border-color: #334155; 
+    }
+
+    body.dark-mode .dropdown-item { 
+      color: #e2e8f0; 
+    }
+
+    body.dark-mode .dropdown-item:hover { 
+      background-color: #334155; 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - FORM ELEMENTS                                   */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode .form-control, body.dark-mode .input-group-text { 
+      background-color: #0f172a; 
+      border-color: #334155; 
+      color: #f1f5f9; 
+    }
+
+    body.dark-mode .form-select { 
+      background-color: #0f172a; 
+      border-color: #334155; 
+      color: #f1f5f9; 
+    }
+
+    body.dark-mode .form-select option { 
+      background-color: #1e293b; 
+      color: #e2e8f0; 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - MODALS & OFFCANVAS                              */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode .modal-content { 
+      background-color: #1e293b; 
+      border-color: #334155; 
+      color: #e2e8f0; 
+    }
+
+    body.dark-mode .modal-header { 
+      background-color: #0f172a; 
+      border-color: #334155; 
+    }
+
+    /* Invert close button for visibility in dark mode */
+    body.dark-mode .modal-header .btn-close { 
+      filter: invert(1); 
+    }
+
+    body.dark-mode .modal-footer { 
+      background-color: #0f172a; 
+      border-color: #334155; 
+    }
+
+    /* Dark mode: Settings offcanvas */
+    body.dark-mode .offcanvas { 
+      background-color: #1e293b; 
+      color: #e2e8f0; 
+    }
+
+    body.dark-mode .offcanvas-header { 
+      background-color: #0f172a; 
+      border-color: #334155; 
+    }
+
+    body.dark-mode .offcanvas-header .btn-close { 
+      filter: invert(1); 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - PAGINATION                                      */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode .pagination .page-link { 
+      background-color: #0f172a; 
+      border-color: #334155; 
+      color: #e2e8f0; 
+    }
+
+    body.dark-mode .pagination .page-link:hover { 
+      background-color: #334155; 
+      border-color: #475569; 
+    }
+
+    body.dark-mode .pagination .page-item.active .page-link { 
+      background-color: #3b82f6; 
+      border-color: #3b82f6; 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* DARK MODE - DATE PICKER                                     */
+    /* ═══════════════════════════════════════════════════════════ */
+    /* Invert calendar icon for visibility in dark mode */
+    body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator { 
+      filter: invert(1); 
+    }
+
+    /* Ensure summary card left borders remain visible in dark mode */
+    body.dark-mode .summary-card.total { 
+      border-left-color: #3b82f6 !important; 
+    }
+
+    body.dark-mode .summary-card.income { 
+      border-left-color: #10b981 !important; 
+    }
+
+    body.dark-mode .summary-card.expense { 
+      border-left-color: #ef4444 !important; 
+    }
+
+    body.dark-mode .role-badge { 
+      background: #2d3a5e; 
+      color: #b9d0ff; 
+    }
+    
+    /* Dark mode: Ensure text remains readable on hover */
+    body.dark-mode .transaction-row:hover { 
+      background-color: rgba(255, 255, 255); 
+      color: #ffffff; 
+    }
+
+    body.dark-mode .insight-bubble { 
+      background: #111827; 
+    }
+
+    /* ═══════════════════════════════════════════════════════════ */
+    /* GITHUB SECTION - DARK MODE SUPPORT                          */
+    /* ═══════════════════════════════════════════════════════════ */
+    body.dark-mode .border-top { 
+      border-color: #334155 !important; 
+    }
+
+    body.dark-mode .text-muted { 
+      color: #94a3b8 !important; 
+    }

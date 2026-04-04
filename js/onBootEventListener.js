@@ -11,7 +11,9 @@ document.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll("[data-role]").forEach(el => {
     el.addEventListener("click", e => {
       e.preventDefault();
-      dispatch({ type: "SET_ROLE", payload: el.getAttribute("data-role") });
+      const role = el.getAttribute("data-role");
+      dispatch({ type: "SET_ROLE", payload: role });
+      showFeedbackToast(`Switched to ${role === "admin" ? "Admin" : "Viewer"}`);
     });
   });
 
