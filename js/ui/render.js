@@ -34,7 +34,7 @@ function render(state) {
 
   // --- admin header ---
   const adminHeader = document.getElementById("adminActionsHeader");
-  patchStyle(adminHeader, "display", "table-cell");
+  patchStyle(adminHeader, "display", isAdmin ? "table-cell" : "none");
 
   // --- transactions table (keyed diff) ---
   renderTransactionsTable(state);
