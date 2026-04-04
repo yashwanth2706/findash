@@ -35,7 +35,8 @@
     .role-badge { background: #eef2ff; padding: 6px 14px; border-radius: 40px; font-size: 0.85rem; font-weight: 500; }
     body.dark-mode .role-badge { background: #2d3a5e; color: #b9d0ff; }
     .transaction-row:hover { background-color: rgba(59,130,246,0.05); cursor: pointer; }
-    .filter-active { font-weight: 600; background-color: #eef2ff; }
+    body.dark-mode .transaction-row:hover { background-color: rgba(255, 255, 255); color: #ffffff; }
+    .filter-active { font-weight: 600; background-color: #fcfdff; }
     .insight-bubble { background: #f8fafc; border-radius: 1rem; padding: 0.75rem 1rem; }
     body.dark-mode .insight-bubble { background: #111827; }
     .btn-icon { border-radius: 40px; padding: 0.3rem 0.9rem; }
