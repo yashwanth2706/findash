@@ -57,6 +57,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
+  document.getElementById("paginationContainer").addEventListener("click", (e) => {
+    const btn = e.target.closest("button.pagination-btn");
+    if (!btn) return;
+    const page = parseInt(btn.dataset.page, 10);
+    if (page >= 1) {
+      dispatch({ type: "SET_PAGE", payload: page });
+      document.querySelector(".table-responsive").scrollIntoView({ behavior: "smooth" });
+    }
+  });
+
   document.getElementById("confirmClearAllBtn").addEventListener("click", () => {
     if (!state.transactions.length) {
       showFeedbackToast("Nothing to delete", "warning");

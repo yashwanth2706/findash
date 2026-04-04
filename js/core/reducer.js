@@ -8,13 +8,16 @@ function reducer(state, action) {
       return { ...state, role: action.payload };
 
     case "SET_FILTER":
-      return { ...state, filterType: action.payload };
+      return { ...state, filterType: action.payload, currentPage: 1 };
 
     case "SET_SEARCH":
-      return { ...state, searchTerm: action.payload };
+      return { ...state, searchTerm: action.payload, currentPage: 1 };
 
     case "SET_SORT":
       return { ...state, sortBy: action.payload };
+
+    case "SET_PAGE":
+      return { ...state, currentPage: action.payload };
 
     case "TOGGLE_DARK_MODE":
       return { ...state, darkMode: !state.darkMode };
@@ -23,7 +26,7 @@ function reducer(state, action) {
       const newTx = { ...action.payload, id: Date.now().toString() };
       const transactions = [...state.transactions, newTx];
       localStorage.setItem("fintransactions", JSON.stringify(transactions));
-      return { ...state, transactions };
+      return { ...state, transactions, currentPage: 1 };
     }
 
     case "UPDATE_TRANSACTION": {
@@ -37,7 +40,9 @@ function reducer(state, action) {
     case "DELETE_TRANSACTION": {
       const transactions = state.transactions.filter(tx => tx.id !== action.payload);
       localStorage.setItem("fintransactions", JSON.stringify(transactions));
-      return { ...state, transactions };
+      const pagination = getPaginatedData({ ...state, transactions, currentPage: state.currentPage });
+      const currentPage = pagination.currentPage;
+      return { ...state, transactions, currentPage };
     }
 
     case "CLEAR_TRANSACTIONS": {
@@ -58,6 +63,7 @@ function reducer(state, action) {
         searchTerm: "",
         sortBy: "date_desc",
         darkMode: false,
+        currentPage: 1,
       };
     }
 

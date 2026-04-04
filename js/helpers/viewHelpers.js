@@ -98,3 +98,22 @@ function computeInsights(transactions) {
 
   return result;
 }
+
+function getPaginatedData(state) {
+  const filtered = getFilteredSorted(state);
+  const totalItems = filtered.length;
+  const totalPages = Math.ceil(totalItems / state.itemsPerPage);
+  const currentPage = Math.max(1, Math.min(state.currentPage, totalPages));
+  
+  const startIdx = (currentPage - 1) * state.itemsPerPage;
+  const endIdx = startIdx + state.itemsPerPage;
+  const paginatedItems = filtered.slice(startIdx, endIdx);
+  
+  return {
+    items: paginatedItems,
+    currentPage,
+    totalPages,
+    totalItems,
+    itemsPerPage: state.itemsPerPage,
+  };
+}

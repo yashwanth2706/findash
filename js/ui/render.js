@@ -82,16 +82,17 @@ function renderCategoryChart(transactions) {
 }
 
 function renderTransactionsTable(state) {
-  const filtered = getFilteredSorted(state);
+  const pagination = getPaginatedData(state);
   const tbody    = document.getElementById("transactionsTableBody");
   const emptyDiv = document.getElementById("emptyStateMsg");
 
-  if (!filtered.length) {
+  if (!pagination.items.length) {
     patchTbody(tbody, [{
       key: null,
       html: `<tr><td colspan="6" class="text-center text-muted py-3">No transactions match</td></tr>`
     }]);
     emptyDiv.classList.remove("d-none");
+    renderPagination(pagination);
     return;
   }
 
@@ -104,7 +105,7 @@ function renderTransactionsTable(state) {
       </td>`
     : () => "";
 
-  const newRows = filtered.map(tx => ({
+  const newRows = pagination.items.map(tx => ({
     key: tx.id,
     html: `<tr class="transaction-row" data-id="${tx.id}">
       <td>${tx.date}</td>
@@ -119,8 +120,44 @@ function renderTransactionsTable(state) {
   }));
 
   patchTbody(tbody, newRows);
+  renderPagination(pagination);
 
   // Event delegation handles edit/delete in onBootEventListener; no per-render attachment here.
+}
+
+function renderPagination(pagination) {
+  const container = document.getElementById("paginationContainer");
+  const { currentPage, totalPages } = pagination;
+
+  if (totalPages <= 1) {
+    container.innerHTML = "";
+    return;
+  }
+
+  let html = `<nav aria-label="Transaction pagination">
+    <ul class="pagination justify-content-center">
+      <li class="page-item ${currentPage === 1 ? "disabled" : ""}">
+        <button class="page-link pagination-btn" data-page="${currentPage - 1}">Previous</button>
+      </li>`;
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === currentPage) {
+      html += `<li class="page-item active"><span class="page-link">${i}</span></li>`;
+    } else {
+      html += `<li class="page-item"><button class="page-link pagination-btn" data-page="${i}">${i}</button></li>`;
+    }
+  }
+
+  html += `<li class="page-item ${currentPage === totalPages ? "disabled" : ""}">
+    <button class="page-link pagination-btn" data-page="${currentPage + 1}">Next</button>
+  </li>
+  </ul>
+  </nav>
+  <div class="text-center text-muted small">
+    Page ${currentPage} of ${totalPages} | ${pagination.totalItems} total transactions
+  </div>`;
+
+  if (container.innerHTML !== html) container.innerHTML = html;
 }
 
 function renderInsights(transactions) {

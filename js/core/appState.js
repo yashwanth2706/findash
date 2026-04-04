@@ -14,5 +14,7 @@ function loadInitialState() {
     searchTerm: "",
     sortBy:     "date_desc",
     darkMode:   localStorage.getItem("darkMode") === "true",
+    currentPage: 1,
+    itemsPerPage: 10,
   };
 }
