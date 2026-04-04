@@ -17,8 +17,8 @@ function render(state) {
   const addBtn = document.getElementById("addTransactionBtn");
   const clearAllBtn = document.getElementById("clearAllBtn");
   const resetBtn = document.getElementById("resetDashboardBtn");
-  addBtn.disabled = false;
   const isAdmin = state.role === "admin";
+  addBtn.style.display = isAdmin ? "inline-block" : "none";
   clearAllBtn.style.display = isAdmin ? "inline-block" : "none";
   resetBtn.style.display = isAdmin ? "inline-block" : "none";
 
