@@ -86,17 +86,28 @@ function renderTransactionsTable(state) {
   const tbody    = document.getElementById("transactionsTableBody");
   const emptyDiv = document.getElementById("emptyStateMsg");
 
-  if (!pagination.items.length) {
+  // Case 1: Completely empty (0 transactions total)
+  if (state.transactions.length === 0) {
     patchTbody(tbody, [{
       key: null,
-      html: `<tr><td colspan="6" class="text-center text-muted py-3">No transactions match</td></tr>`
+      html: `<tr><td colspan="6" class="text-center text-muted py-3">No Transactions</td></tr>`
     }]);
+    emptyDiv.classList.add("d-none");
+    renderPagination(pagination);
+    return;
+  }
+
+  // Case 2: Has transactions but filters eliminated all
+  if (!pagination.items.length) {
+    tbody.innerHTML = "";
     emptyDiv.classList.remove("d-none");
     renderPagination(pagination);
     return;
   }
 
+  // Case 3: Has transactions that match
   emptyDiv.classList.add("d-none");
+  tbody.innerHTML = ""; // Clear placeholder row from empty state
 
   const actionCol = state.role === "admin"
     ? tx => `<td>
