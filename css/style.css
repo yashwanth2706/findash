@@ -32,6 +32,10 @@
     .summary-card.total { border-left-color: #3b82f6; }
     .summary-card.income { border-left-color: #10b981; }
     .summary-card.expense { border-left-color: #ef4444; }
+    /* Ensure summary card left borders remain visible in dark mode */
+    body.dark-mode .summary-card.total { border-left-color: #3b82f6 !important; }
+    body.dark-mode .summary-card.income { border-left-color: #10b981 !important; }
+    body.dark-mode .summary-card.expense { border-left-color: #ef4444 !important; }
     .role-badge { background: #eef2ff; padding: 6px 14px; border-radius: 40px; font-size: 0.85rem; font-weight: 500; }
     body.dark-mode .role-badge { background: #2d3a5e; color: #b9d0ff; }
     .transaction-row:hover { background-color: rgba(59,130,246,0.05); cursor: pointer; }
