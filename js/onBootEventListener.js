@@ -100,6 +100,19 @@ document.addEventListener("DOMContentLoaded", () => {
     dispatch({ type: "TOGGLE_DARK_MODE" })
   );
 
+  const insightsCollapse = document.getElementById("insightsCollapse");
+  const insightsToggleBtn = document.getElementById("insightsToggleBtn");
+  if (insightsCollapse && insightsToggleBtn) {
+    insightsCollapse.addEventListener("shown.bs.collapse", () => {
+      insightsToggleBtn.innerHTML = '<i class="bi bi-chevron-up"></i> Collapse Insight';
+      insightsToggleBtn.setAttribute("aria-expanded", "true");
+    });
+    insightsCollapse.addEventListener("hidden.bs.collapse", () => {
+      insightsToggleBtn.innerHTML = '<i class="bi bi-chevron-down"></i> Show Insight';
+      insightsToggleBtn.setAttribute("aria-expanded", "false");
+    });
+  }
+
   // Initial render
   render(state);
 });
