@@ -1,114 +1,334 @@
-    /* ═══════════════════════════════════════════════════════════ */
-    /* GLOBAL STYLES & ANIMATIONS                                  */
-    /* ═══════════════════════════════════════════════════════════ */
-    * { 
-      transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease; 
-    }
+/* ──────────────────────────────────────────
+   FinDash — SaaS-grade design system
+   Font: DM Sans (display) + DM Mono (numbers)
+   Palette: Neutral slate + indigo accent
+────────────────────────────────────────── */
 
-    body {
-      background: #fbfbf3;
-      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    }
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* CARDS & LAYOUT                                              */
-    /* ═══════════════════════════════════════════════════════════ */
-    .card { 
-      border: none; 
-      border-radius: 1.5rem; 
-      box-shadow: 0 8px 20px rgba(0,0,0,0.02), 0 2px 6px rgba(0,0,0,0.05); 
-      transition: transform 0.1s ease; 
-    }
+/* ── Tokens ── */
+:root {
+  --bg:          #f8f9fb;
+  --surface:     #ffffff;
+  --surface-2:   #f2f4f7;
+  --border:      #e4e7ec;
+  --border-soft: #eff1f5;
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* SUMMARY CARDS (Total Balance, Income, Expenses)             */
-    /* ═══════════════════════════════════════════════════════════ */
-    .summary-card { 
-      border-left: 5px solid; 
-      transition: all 0.2s; 
-    }
+  --text-primary:   #0f1117;
+  --text-secondary: #6b7280;
+  --text-tertiary:  #9ca3af;
 
-    /* Summary card colors */
-    .summary-card.total { 
-      border-left-color: #3b82f6;     /* Blue for total balance */
-    }
+  --accent:       #4f46e5;
+  --accent-light: #eef2ff;
+  --accent-hover: #4338ca;
 
-    .summary-card.income { 
-      border-left-color: #10b981;     /* Green for income */
-    }
+  --income-text:  #059669;
+  --income-bg:    #ecfdf5;
+  --expense-text: #dc2626;
+  --expense-bg:   #fef2f2;
+  --balance-text: #0f1117;
 
-    .summary-card.expense { 
-      border-left-color: #ef4444;     /* Red for expenses */
-    }
+  --radius-sm:  6px;
+  --radius-md:  10px;
+  --radius-lg:  14px;
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* ROLE BADGES (Viewer/Admin)                                  */
-    /* ═══════════════════════════════════════════════════════════ */
-    .role-badge { 
-      background: #eef2ff; 
-      padding: 6px 14px; 
-      border-radius: 40px; 
-      font-size: 0.85rem; 
-      font-weight: 500; 
-    }
+  --shadow-xs: 0 1px 2px rgba(0,0,0,.05);
+  --shadow-sm: 0 1px 4px rgba(0,0,0,.07), 0 0 0 1px rgba(0,0,0,.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.08), 0 0 0 1px rgba(0,0,0,.04);
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* TRANSACTION ROWS                                            */
-    /* ═══════════════════════════════════════════════════════════ */
-    /* Hover effect for transaction rows */
-    .transaction-row:hover { 
-      background-color: rgba(59,130,246,0.05); 
-      cursor: pointer; 
-    }
+  --font-body: 'DM Sans', system-ui, sans-serif;
+  --font-mono: 'DM Mono', 'Fira Mono', monospace;
+}
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* FILTER & SEARCH STATES                                      */
-    /* ═══════════════════════════════════════════════════════════ */
-    .filter-active { 
-      font-weight: 600; 
-      background-color: #fcfdff; 
-    }
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; }
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* INSIGHTS BUBBLES                                            */
-    /* ═══════════════════════════════════════════════════════════ */
-    .insight-bubble { 
-      background: #f8fafc; 
-      border-radius: 1rem; 
-      padding: 0.75rem 1rem; 
-    }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text-primary);
+  font-size: 14.5px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* UTILITY CLASSES                                             */
-    /* ═══════════════════════════════════════════════════════════ */
-    .btn-icon { 
-      border-radius: 40px; 
-      padding: 0.3rem 0.9rem; 
-    }
+.container { max-width: 1120px; }
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* RESPONSIVE DESIGN                                           */
-    /* ═══════════════════════════════════════════════════════════ */
-    @media (max-width: 768px) { 
-      .card-title { 
-        font-size: 1rem; 
-      } 
-      .display-6 { 
-        font-size: 1.6rem; 
-      } 
-    }
+/* ── Header ── */
+h1.fw-bold {
+  font-size: 1.55rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+h1.fw-bold i { color: var(--accent); margin-right: 4px; }
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* CHARTS                                                      */
-    /* ═══════════════════════════════════════════════════════════ */
-    canvas { 
-      max-height: 220px; 
-      width: 100% !important; 
-    }
+p.text-secondary-emphasis {
+  color: var(--text-secondary) !important;
+  font-size: 0.875rem;
+  margin-top: 2px;
+}
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* CURSORS & INTERACTIONS                                      */
-    /* ═══════════════════════════════════════════════════════════ */
-    .pointer { 
-      cursor: pointer; 
-    }
+hr { border-color: var(--border); margin-bottom: 1.75rem; }
+
+/* ── Buttons ── */
+.btn {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: 0.845rem;
+  border-radius: var(--radius-md);
+  padding: 0.42rem 1rem;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; box-shadow: none; }
+
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover, .btn-primary:focus { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+
+.btn-outline-primary { border-color: var(--accent); color: var(--accent); background: transparent; }
+.btn-outline-primary:hover { background: var(--accent-light); border-color: var(--accent); color: var(--accent); }
+
+.btn-outline-secondary { border-color: var(--border); color: var(--text-secondary); background: var(--surface); }
+.btn-outline-secondary:hover { background: var(--surface-2); border-color: var(--border); color: var(--text-primary); }
+
+.btn-outline-danger { color: var(--expense-text); border-color: #fecaca; background: transparent; }
+.btn-outline-danger:hover { background: var(--expense-bg); border-color: #fca5a5; color: var(--expense-text); }
+
+.btn-danger { background: var(--expense-text); border-color: var(--expense-text); color: #fff; }
+.btn-danger:hover { background: #b91c1c; border-color: #b91c1c; }
+
+.btn-secondary { background: var(--surface-2); border-color: var(--border); color: var(--text-primary); }
+.btn-secondary:hover { background: var(--border); border-color: var(--border); color: var(--text-primary); }
+
+.rounded-pill   { border-radius: 999px !important; }
+.rounded-circle { border-radius: 50% !important; }
+.btn-sm { font-size: 0.78rem; padding: 0.3rem 0.65rem; }
+
+/* ── Cards ── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xs);
+}
+.card-body { padding: 1.25rem; }
+.card-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 1rem; }
+.card-title i { color: var(--text-secondary); margin-right: 5px; }
+
+/* ── Summary Cards ── */
+.summary-card { border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.summary-card .card-body { padding: 1.35rem 1.5rem; }
+.summary-card p { font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+.summary-card p i { margin-right: 4px; }
+.summary-card h2 {
+  font-size: 2rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  letter-spacing: -0.03em;
+  margin: 4px 0 6px;
+}
+.summary-card small { font-size: 0.78rem; }
+.summary-card.total   { background: var(--surface); }
+.summary-card.income  { background: var(--income-bg);  border-color: #d1fae5; }
+.summary-card.expense { background: var(--expense-bg); border-color: #fecaca; }
+.summary-card.total   h2 { color: var(--balance-text); }
+.summary-card.income  h2 { color: var(--income-text);  }
+.summary-card.expense h2 { color: var(--expense-text); }
+
+/* ── Insights ── */
+#insightsToggleBtn {
+  font-size: 0.82rem;
+  padding: 0.35rem 0.9rem;
+  color: var(--text-secondary);
+  border-color: var(--border);
+  background: var(--surface);
+}
+#insightsToggleBtn:hover { background: var(--surface-2); color: var(--text-primary); }
+
+.insight-bubble {
+  background: var(--surface-2);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+  font-size: 0.835rem;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  height: 100%;
+}
+
+/* ── Charts — constrain canvas height ── */
+#trendChart,
+#categoryChart {
+  max-height: 200px !important;
+}
+
+/* ── Transactions toolbar ──────────────────
+   Layout: [Title] [Search | TypeFilter | Sort | (Clear) (Add)]
+   Clear + Add are always together, never separated.
+─────────────────────────────────────────── */
+.card-body > .d-flex.flex-wrap.justify-content-between {
+  align-items: flex-start !important;
+  row-gap: 10px;
+}
+
+/* The right-side controls div */
+.card-body > .d-flex.flex-wrap.justify-content-between > div.d-flex {
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 auto;
+  justify-content: flex-end;
+}
+
+/* Search box: fixed comfortable width */
+.card-body .input-group {
+  width: 210px !important;
+  flex-shrink: 0;
+}
+
+/* Type + sort selects: compact */
+#typeFilter { width: 110px !important; min-width: 0; }
+#sortSelect { width: 155px !important; min-width: 0; }
+
+/* Clear all + Add: keep together with a left margin */
+#clearAllBtn,
+#addTransactionBtn {
+  flex-shrink: 0;
+}
+
+/* Group Clear + Add so they never split across lines */
+#clearAllBtn + #addTransactionBtn,
+#addTransactionBtn {
+  margin-left: 0;
+}
+
+/* Wrap: on narrow screens let filters stack, but keep buttons grouped */
+@media (max-width: 768px) {
+  .card-body > .d-flex.flex-wrap.justify-content-between {
+    flex-direction: column;
+    align-items: stretch !important;
+  }
+  .card-body > .d-flex.flex-wrap.justify-content-between > div.d-flex {
+    justify-content: flex-start;
+  }
+  .card-body .input-group { width: 100% !important; }
+  #typeFilter, #sortSelect { flex: 1 1 0; width: auto !important; }
+}
+
+/* ── Table ── */
+.table { font-size: 0.875rem; color: var(--text-primary); border-color: var(--border-soft); }
+.table thead th {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.65rem 1rem;
+}
+.table tbody td {
+  padding: 0.72rem 1rem;
+  border-bottom: 1px solid var(--border-soft);
+  vertical-align: middle;
+}
+.table tbody tr:last-child td { border-bottom: none; }
+.table-hover tbody tr:hover td { background: var(--surface-2); }
+.table td:nth-child(4) { font-family: var(--font-mono); font-size: 0.875rem; font-weight: 500; }
+
+/* ── Badges ── */
+.badge {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 0.3em 0.7em;
+  border-radius: 999px;
+}
+.badge.bg-success { background: var(--income-bg)  !important; color: var(--income-text)  !important; }
+.badge.bg-danger  { background: var(--expense-bg) !important; color: var(--expense-text) !important; }
+
+/* ── Form controls ── */
+.form-control, .form-select {
+  font-family: var(--font-body);
+  font-size: 0.855rem;
+  color: var(--text-primary);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0.42rem 0.85rem;
+  box-shadow: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.form-control::placeholder { color: var(--text-tertiary); }
+.form-control:focus, .form-select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+  outline: none;
+}
+.input-group-text {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-right: none;
+  color: var(--text-tertiary);
+  border-radius: var(--radius-md) 0 0 var(--radius-md);
+}
+.input-group .form-control {
+  border-left: none;
+  border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+
+/* ── Dropdown ── */
+.dropdown-menu { border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-md); padding: 0.35rem; font-size: 0.875rem; }
+.dropdown-item { border-radius: var(--radius-sm); padding: 0.45rem 0.75rem; color: var(--text-primary); }
+.dropdown-item:hover { background: var(--surface-2); color: var(--text-primary); }
+.dropdown-item i { margin-right: 6px; color: var(--text-secondary); }
+
+/* ── Modals ── */
+.modal-content { border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-md); }
+.modal-header  { border-bottom: 1px solid var(--border); padding: 1.1rem 1.4rem; }
+.modal-title   { font-size: 0.95rem; font-weight: 600; }
+.modal-body    { padding: 1.25rem 1.4rem; }
+.modal-footer  { border-top: 1px solid var(--border); padding: 0.9rem 1.4rem; gap: 8px; }
+.form-label    { font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); margin-bottom: 5px; }
+
+/* ── Offcanvas ── */
+.offcanvas        { background: var(--surface); border-left: 1px solid var(--border); }
+.offcanvas-header { border-bottom: 1px solid var(--border); padding: 1.1rem 1.4rem; }
+.offcanvas-title  { font-size: 0.95rem; font-weight: 600; }
+.offcanvas-body   { padding: 1.25rem 1.4rem; }
+.offcanvas-body h6 { font-size: 0.78rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-secondary); margin-bottom: 0.6rem; }
+
+/* ── Toast ── */
+.toast { border-radius: var(--radius-md); font-size: 0.875rem; box-shadow: var(--shadow-md); }
+.toast.bg-success { background: var(--income-text) !important; }
+
+/* ── Pagination ── */
+.pagination { gap: 3px; }
+.page-link { border-radius: var(--radius-sm) !important; border: 1px solid var(--border); color: var(--text-secondary); font-size: 0.835rem; padding: 0.35rem 0.7rem; background: var(--surface); }
+.page-link:hover { background: var(--surface-2); color: var(--text-primary); border-color: var(--border); }
+.page-item.active .page-link { background: var(--accent); border-color: var(--accent); color: #fff; }
+.page-item.disabled .page-link { opacity: 0.4; }
+
+/* ── Headings ── */
+h4.fw-semibold { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+h4.fw-semibold i, h5.fw-semibold i { color: var(--text-secondary); margin-right: 5px; }
+
+/* ── Footer ── */
+.border-top { border-color: var(--border) !important; }
+.border-top p.text-muted { font-size: 0.82rem; color: var(--text-tertiary) !important; }
+
+/* ── Empty state ── */
+#emptyStateMsg { color: var(--text-tertiary); font-size: 0.875rem; padding: 2rem; }
+
+/* ── Form switch ── */
+.form-check-input:checked { background-color: var(--accent); border-color: var(--accent); }
+.form-check-label { font-size: 0.875rem; color: var(--text-primary); }
+
+/* ── Misc ── */
+.text-success { color: var(--income-text)    !important; }
+.text-danger  { color: var(--expense-text)   !important; }
+.text-muted   { color: var(--text-secondary) !important; }

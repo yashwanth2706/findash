@@ -1,186 +1,256 @@
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - BASE STYLES                                     */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode { 
-      background: #0b1120; 
-      color: #e2e8f0; 
-    }
+/* ──────────────────────────────────────────
+   FinDash — Dark mode
+   Supports BOTH toggle patterns:
+     body.dark-mode         (class-based)
+     body[data-theme=dark]  (attribute-based)
+   Add whichever your JS uses — both work.
+────────────────────────────────────────── */
 
-    /* Dark mode: Cards & general backgrounds */
-    body.dark-mode .card, body.dark-mode .bg-white { 
-      background-color: #1e293b !important; 
-      border-color: #334155 !important; 
-      color: #e2e8f0; 
-    }
+body.dark-mode,
+[data-theme="dark"] {
+  --bg:          #0d0f14;
+  --surface:     #13161d;
+  --surface-2:   #1c2029;
+  --border:      #252932;
+  --border-soft: #1e2330;
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - TABLES                                          */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode .table { 
-      color: #e2e8f0; 
-    }
+  --text-primary:   #f0f2f7;
+  --text-secondary: #8b93a5;
+  --text-tertiary:  #555e72;
 
-    body.dark-mode .table-light { 
-      background-color: #0f172a; 
-    }
+  --accent:       #6366f1;
+  --accent-light: #1e1f3a;
+  --accent-hover: #818cf8;
 
-    /* Dark mode: Table headers */
-    body.dark-mode .table-light th { 
-      background-color: #1e293b; 
-      color: #e2e8f0; 
-      border-color: #334155; 
-    }
+  --income-text:  #34d399;
+  --income-bg:    #052e1c;
+  --expense-text: #f87171;
+  --expense-bg:   #2d0f0f;
+  --balance-text: #f0f2f7;
+}
 
-    /* Dark mode: Alternate row colors for better readability */
-    body.dark-mode .table-striped>tbody>tr:nth-of-type(odd)>* { 
-      background-color: rgba(255,255,255,0.05); 
-    }
+/* ── Body ── */
+body.dark-mode,
+[data-theme="dark"] {
+  background: var(--bg);
+  color: var(--text-primary);
+}
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - BUTTONS & CONTROLS                              */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode .btn-outline-secondary { 
-      border-color: #475569; 
-      color: #cbd5e1; 
-    }
+/* ── Cards ── */
+body.dark-mode .card,
+[data-theme="dark"] .card {
+  background: var(--surface);
+  border-color: var(--border);
+}
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - DROPDOWNS & MENUS                               */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode .dropdown-menu { 
-      background-color: #1e293b; 
-      border-color: #334155; 
-    }
+body.dark-mode .summary-card.income,
+[data-theme="dark"] .summary-card.income {
+  background: var(--income-bg);
+  border-color: #14532d44;
+}
+body.dark-mode .summary-card.expense,
+[data-theme="dark"] .summary-card.expense {
+  background: var(--expense-bg);
+  border-color: #7f1d1d44;
+}
 
-    body.dark-mode .dropdown-item { 
-      color: #e2e8f0; 
-    }
+/* ── Table ── */
+body.dark-mode .table,
+[data-theme="dark"] .table {
+  color: var(--text-primary);
+  border-color: var(--border-soft);
+}
+body.dark-mode .table thead th,
+[data-theme="dark"] .table thead th {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+body.dark-mode .table-light,
+[data-theme="dark"] .table-light {
+  --bs-table-bg: var(--surface-2);
+  color: var(--text-secondary);
+}
+body.dark-mode .table tbody td,
+[data-theme="dark"] .table tbody td {
+  border-color: var(--border-soft);
+  color: var(--text-primary);
+}
+body.dark-mode .table-hover tbody tr:hover td,
+[data-theme="dark"] .table-hover tbody tr:hover td {
+  background: var(--surface-2);
+}
 
-    body.dark-mode .dropdown-item:hover { 
-      background-color: #334155; 
-    }
+/* ── Inputs & selects ── */
+body.dark-mode .form-control,
+body.dark-mode .form-select,
+[data-theme="dark"] .form-control,
+[data-theme="dark"] .form-select {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+body.dark-mode .form-control::placeholder,
+[data-theme="dark"] .form-control::placeholder {
+  color: var(--text-tertiary);
+}
+body.dark-mode .input-group-text,
+[data-theme="dark"] .input-group-text {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-tertiary);
+}
+body.dark-mode .form-select option,
+[data-theme="dark"] .form-select option {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - FORM ELEMENTS                                   */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode .form-control, body.dark-mode .input-group-text { 
-      background-color: #0f172a; 
-      border-color: #334155; 
-      color: #f1f5f9; 
-    }
+/* ── Buttons ── */
+body.dark-mode .btn-outline-secondary,
+[data-theme="dark"] .btn-outline-secondary {
+  border-color: var(--border);
+  color: var(--text-secondary);
+  background: var(--surface);
+}
+body.dark-mode .btn-outline-secondary:hover,
+[data-theme="dark"] .btn-outline-secondary:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+body.dark-mode .btn-secondary,
+[data-theme="dark"] .btn-secondary {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+body.dark-mode .btn-outline-danger,
+[data-theme="dark"] .btn-outline-danger {
+  border-color: #7f1d1d55;
+  color: var(--expense-text);
+}
+body.dark-mode .btn-outline-danger:hover,
+[data-theme="dark"] .btn-outline-danger:hover {
+  background: var(--expense-bg);
+}
+body.dark-mode #insightsToggleBtn,
+[data-theme="dark"] #insightsToggleBtn {
+  border-color: var(--border);
+  color: var(--text-secondary);
+  background: var(--surface);
+}
+body.dark-mode #insightsToggleBtn:hover,
+[data-theme="dark"] #insightsToggleBtn:hover {
+  background: var(--surface-2);
+}
 
-    body.dark-mode .form-select { 
-      background-color: #0f172a; 
-      border-color: #334155; 
-      color: #f1f5f9; 
-    }
+/* ── Dropdown ── */
+body.dark-mode .dropdown-menu,
+[data-theme="dark"] .dropdown-menu {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body.dark-mode .dropdown-item,
+[data-theme="dark"] .dropdown-item {
+  color: var(--text-primary);
+}
+body.dark-mode .dropdown-item:hover,
+[data-theme="dark"] .dropdown-item:hover {
+  background: var(--surface-2);
+}
 
-    body.dark-mode .form-select option { 
-      background-color: #1e293b; 
-      color: #e2e8f0; 
-    }
+/* ── Modals ── */
+body.dark-mode .modal-content,
+[data-theme="dark"] .modal-content {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body.dark-mode .modal-header,
+body.dark-mode .modal-footer,
+[data-theme="dark"] .modal-header,
+[data-theme="dark"] .modal-footer {
+  border-color: var(--border);
+}
+body.dark-mode .modal-body p,
+[data-theme="dark"] .modal-body p {
+  color: var(--text-secondary);
+}
+body.dark-mode .btn-close,
+[data-theme="dark"] .btn-close {
+  filter: invert(1) grayscale(1);
+}
 
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - MODALS & OFFCANVAS                              */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode .modal-content { 
-      background-color: #1e293b; 
-      border-color: #334155; 
-      color: #e2e8f0; 
-    }
+/* ── Offcanvas ── */
+body.dark-mode .offcanvas,
+[data-theme="dark"] .offcanvas {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body.dark-mode .offcanvas-header,
+[data-theme="dark"] .offcanvas-header {
+  border-color: var(--border);
+}
 
-    body.dark-mode .modal-header { 
-      background-color: #0f172a; 
-      border-color: #334155; 
-    }
+/* ── Insight bubbles ── */
+body.dark-mode .insight-bubble,
+[data-theme="dark"] .insight-bubble {
+  background: var(--surface-2);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
 
-    /* Invert close button for visibility in dark mode */
-    body.dark-mode .modal-header .btn-close { 
-      filter: invert(1); 
-    }
+/* ── Pagination ── */
+body.dark-mode .page-link,
+[data-theme="dark"] .page-link {
+  background: var(--surface);
+  border-color: var(--border);
+  color: var(--text-secondary);
+}
+body.dark-mode .page-link:hover,
+[data-theme="dark"] .page-link:hover {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+body.dark-mode .page-item.active .page-link,
+[data-theme="dark"] .page-item.active .page-link {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
 
-    body.dark-mode .modal-footer { 
-      background-color: #0f172a; 
-      border-color: #334155; 
-    }
+/* ── Badges ── */
+body.dark-mode .badge.bg-success,
+[data-theme="dark"] .badge.bg-success {
+  background: #052e1c !important;
+  color: var(--income-text) !important;
+}
+body.dark-mode .badge.bg-danger,
+[data-theme="dark"] .badge.bg-danger {
+  background: #2d0f0f !important;
+  color: var(--expense-text) !important;
+}
 
-    /* Dark mode: Settings offcanvas */
-    body.dark-mode .offcanvas { 
-      background-color: #1e293b; 
-      color: #e2e8f0; 
-    }
+/* ── Dividers & borders ── */
+body.dark-mode hr,
+[data-theme="dark"] hr {
+  border-color: var(--border);
+}
+body.dark-mode .border-top,
+[data-theme="dark"] .border-top {
+  border-color: var(--border) !important;
+}
 
-    body.dark-mode .offcanvas-header { 
-      background-color: #0f172a; 
-      border-color: #334155; 
-    }
-
-    body.dark-mode .offcanvas-header .btn-close { 
-      filter: invert(1); 
-    }
-
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - PAGINATION                                      */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode .pagination .page-link { 
-      background-color: #0f172a; 
-      border-color: #334155; 
-      color: #e2e8f0; 
-    }
-
-    body.dark-mode .pagination .page-link:hover { 
-      background-color: #334155; 
-      border-color: #475569; 
-    }
-
-    body.dark-mode .pagination .page-item.active .page-link { 
-      background-color: #3b82f6; 
-      border-color: #3b82f6; 
-    }
-
-    /* ═══════════════════════════════════════════════════════════ */
-    /* DARK MODE - DATE PICKER                                     */
-    /* ═══════════════════════════════════════════════════════════ */
-    /* Invert calendar icon for visibility in dark mode */
-    body.dark-mode input[type="date"]::-webkit-calendar-picker-indicator { 
-      filter: invert(1); 
-    }
-
-    /* Ensure summary card left borders remain visible in dark mode */
-    body.dark-mode .summary-card.total { 
-      border-left-color: #3b82f6 !important; 
-    }
-
-    body.dark-mode .summary-card.income { 
-      border-left-color: #10b981 !important; 
-    }
-
-    body.dark-mode .summary-card.expense { 
-      border-left-color: #ef4444 !important; 
-    }
-
-    body.dark-mode .role-badge { 
-      background: #2d3a5e; 
-      color: #b9d0ff; 
-    }
-    
-    /* Dark mode: Ensure text remains readable on hover */
-    body.dark-mode .transaction-row:hover { 
-      background-color: rgba(255, 255, 255); 
-      color: #ffffff; 
-    }
-
-    body.dark-mode .insight-bubble { 
-      background: #111827; 
-    }
-
-    /* ═══════════════════════════════════════════════════════════ */
-    /* GITHUB SECTION - DARK MODE SUPPORT                          */
-    /* ═══════════════════════════════════════════════════════════ */
-    body.dark-mode .border-top { 
-      border-color: #334155 !important; 
-    }
-
-    body.dark-mode .text-muted { 
-      color: #94a3b8 !important; 
-    }
+/* ── Form switch ── */
+body.dark-mode .form-check-input:not(:checked),
+[data-theme="dark"] .form-check-input:not(:checked) {
+  background-color: var(--surface-2);
+  border-color: var(--border);
+}
+body.dark-mode .form-check-label,
+[data-theme="dark"] .form-check-label {
+  color: var(--text-primary);
+}
+body.dark-mode small.text-muted,
+[data-theme="dark"] small.text-muted {
+  color: var(--text-tertiary) !important;
+}
