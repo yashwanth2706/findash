@@ -46,25 +46,93 @@ function render(state) {
 function renderTrendChart(transactions) {
   const { monthNames, monthlyBalances } = computeTrend(transactions);
   if (trendChart) trendChart.destroy();
-  trendChart = new Chart(
-    document.getElementById("trendChart").getContext("2d"),
-    {
-      type: "line",
-      data: {
-        labels: monthNames,
-        datasets: [{ label: "Balance ($)", data: monthlyBalances, borderColor: "#3b82f6", tension: 0.3, fill: false }]
+
+  const ctx = document.getElementById("trendChart").getContext("2d");
+
+  // Gradient fill under the line
+  const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+  gradient.addColorStop(0, "rgba(99, 102, 241, 0.18)");
+  gradient.addColorStop(1, "rgba(99, 102, 241, 0)");
+
+  trendChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: monthNames,
+      datasets: [{
+        label: "Balance",
+        data: monthlyBalances,
+        borderColor: "#6366f1",
+        borderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#6366f1",
+        pointBorderColor: "#ffffff",
+        pointBorderWidth: 2,
+        tension: 0.4,
+        fill: true,
+        backgroundColor: gradient,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      interaction: { mode: "index", intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          backgroundColor: "#13161d",
+          titleColor: "#8b93a5",
+          bodyColor: "#f0f2f7",
+          borderColor: "#252932",
+          borderWidth: 1,
+          padding: 10,
+          cornerRadius: 8,
+          titleFont: { family: "'DM Sans', sans-serif", size: 11 },
+          bodyFont: { family: "'DM Mono', monospace", size: 13, weight: "500" },
+          callbacks: {
+            label: ctx => ` $${ctx.parsed.y.toLocaleString("en-US", { minimumFractionDigits: 2 })}`
+          }
+        }
       },
-      options: { responsive: true, maintainAspectRatio: true }
+      scales: {
+        x: {
+          grid: { display: false },
+          border: { display: false },
+          ticks: {
+            color: "#9ca3af",
+            font: { family: "'DM Sans', sans-serif", size: 11 }
+          }
+        },
+        y: {
+          position: "right",
+          grid: {
+            color: "rgba(0,0,0,0.05)",
+            drawBorder: false,
+          },
+          border: { display: false, dash: [4, 4] },
+          ticks: {
+            color: "#9ca3af",
+            font: { family: "'DM Mono', monospace", size: 11 },
+            maxTicksLimit: 5,
+            callback: v => "$" + (v >= 1000 ? (v / 1000).toFixed(0) + "k" : v)
+          }
+        }
+      }
     }
-  );
+  });
 }
 
 function renderCategoryChart(transactions) {
   const categoryMap = new Map();
-  transactions.filter(t => t.type === "expense").forEach(tx => {
-    categoryMap.set(tx.category, (categoryMap.get(tx.category) || 0) + tx.amount);
-  });
+  transactions
+    .filter(t => t.type === "expense")
+    .forEach(tx => categoryMap.set(tx.category, (categoryMap.get(tx.category) || 0) + tx.amount));
+
   if (categoryChart) categoryChart.destroy();
+
+  const palette = ["#6366f1", "#34d399", "#f59e0b", "#f87171", "#a78bfa", "#38bdf8", "#fb923c", "#e879f9"];
+  const total = [...categoryMap.values()].reduce((a, b) => a + b, 0);
+
   categoryChart = new Chart(
     document.getElementById("categoryChart").getContext("2d"),
     {
@@ -73,10 +141,47 @@ function renderCategoryChart(transactions) {
         labels: [...categoryMap.keys()],
         datasets: [{
           data: [...categoryMap.values()],
-          backgroundColor: ["#3b82f6","#10b981","#f59e0b","#ef4444","#8b5cf6","#ec489a"]
+          backgroundColor: palette,
+          borderWidth: 0,
+          hoverOffset: 6,
         }]
       },
-      options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: "bottom" } } }
+      options: {
+        responsive: true,
+        maintainAspectRatio: true,
+        cutout: "72%",
+        plugins: {
+          legend: {
+            position: "bottom",
+            labels: {
+              color: "#6b7280",
+              font: { family: "'DM Sans', sans-serif", size: 11 },
+              padding: 16,
+              boxWidth: 10,
+              boxHeight: 10,
+              usePointStyle: true,
+              pointStyle: "circle",
+            }
+          },
+          tooltip: {
+            backgroundColor: "#13161d",
+            titleColor: "#8b93a5",
+            bodyColor: "#f0f2f7",
+            borderColor: "#252932",
+            borderWidth: 1,
+            padding: 10,
+            cornerRadius: 8,
+            titleFont: { family: "'DM Sans', sans-serif", size: 11 },
+            bodyFont: { family: "'DM Mono', monospace", size: 13, weight: "500" },
+            callbacks: {
+              label: ctx => {
+                const pct = total > 0 ? ((ctx.parsed / total) * 100).toFixed(1) : 0;
+                return ` $${ctx.parsed.toLocaleString("en-US", { minimumFractionDigits: 2 })}  (${pct}%)`;
+              }
+            }
+          }
+        }
+      }
     }
   );
 }
