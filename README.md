@@ -1,6 +1,7 @@
 # FinDash - Interactive Finance Dashboard
 
-A modern, responsive finance dashboard built with vanilla JavaScript, HTML, and CSS. Track transactions, visualize spending patterns, and manage your finances with an intuitive interface that adapts to your preferred theme.
+A modern, responsive finance dashboard built with vanilla Javascript, HTML, CSS, Bootstrap 5 (min js bundel included for utility functions).
+Track transactions, visualize spending patterns, and manage your finances with an intuitive interface that adapts to your preferred theme.
 
 ![FinDash](https://img.shields.io/badge/License-MIT-blue.svg)
 ![Version](https://img.shields.io/badge/Version-1.0.0-green.svg)
